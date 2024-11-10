@@ -1,3 +1,11 @@
-# BACKFLIP NECKREK
+# Ramalan Cuaca
 
-Rafael anying
+Dibuat untuk
+Mata Kuliah REKAYASA PERANGKAT LUNAK
+
+
+
+Teams
+- LuckRaf
+- ItsFuyfyy
+- jecoo09
