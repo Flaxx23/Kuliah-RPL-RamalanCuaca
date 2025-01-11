@@ -1,34 +1,37 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS
 import requests
 
-app = Flask(__name__)
-CORS(app)
+def get_weather(city_name, api_key):
+    base_url = "http://api.openweathermap.org/data/2.5/weather"
+    params = {
+        "q": city_name,
+        "appid": api_key,
+        "units": "metric"
+    }
 
-# Replace with your OpenWeatherMap API key
-API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY'
-BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
-
-@app.route('/weather', methods=['GET'])
-def get_weather():
-    city = request.args.get('city')
-    if city:
-        complete_url = f"{BASE_URL}q={city}&appid={API_KEY}&units=metric"
-        response = requests.get(complete_url)
+    try:
+        response = requests.get(base_url, params=params)
+        response.raise_for_status()
         data = response.json()
-        if data["cod"] != "404":
-            weather_data = {
-                "city": city,
-                "temperature": data['main']['temp'],
-                "description": data['weather'][0]['description'],
-                "humidity": data['main']['humidity'],
-                "wind_speed": data['wind']['speed']
-            }
-            return jsonify(weather_data)
-        else:
-            return jsonify({"error": "City not found"}), 404
-    else:
-        return jsonify({"error": "City not provided"}), 400
 
-if __name__ == '__main__':
-    app.run(debug=True)
+        weather = data["weather"][0]["description"]
+        temperature = data["main"]["temp"]
+        feels_like = data["main"]["feels_like"]
+        humidity = data["main"]["humidity"]
+        wind_speed = data["wind"]["speed"]
+
+        print(f"City: {city_name}")
+        print(f"Weather: {weather}")
+        print(f"Temperature: {temperature}°C")
+        print(f"Feels like: {feels_like}°C")
+        print(f"Humidity: {humidity}%")
+        print(f"Wind speed: {wind_speed}m/s")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+    except KeyError as e:
+        print(f"Error: {e}")
+
+if __name__ == "__main__":
+    API_KEY = "3715a77c94d13e84eebaf0e385b6139c"
+    CITY_NAME = input("Enter city name: ")
+    get_weather(CITY_NAME, API_KEY)
