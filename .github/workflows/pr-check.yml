@@ -1,51 +1,84 @@
 name: PR Check
+
 on:
   pull_request:
     branches:
       - main
-      - patch
 
 jobs:
-  check:
-    runs-on: windows-latest
-
+  pr-check:
+    runs-on: ubuntu-latest
     steps:
+      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.8'
 
+      # Install dependencies (Flake8 for Python, Stylelint for CSS, HTMLhint for HTML, and Flask dependencies)
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt  # Install Python dependencies (including Flask)
+          npm install -g stylelint htmlhint  # Install CSS and HTML linters
 
-      - name: Check Python syntax with flake8
+      # Check for conflicts with the main branch
+      - name: Check for merge conflicts
         run: |
-          pip install flake8
-          flake8 . --max-line-length=120
+          git fetch origin main
+          git merge-base --is-ancestor origin/main HEAD || echo "Merge conflicts detected" && exit 1
 
-      - name: Check HTML syntax with htmlhint
+      # Check for Python files and run Flake8 if there are any Python changes
+      - name: Check for Python files and run Flake8
+        id: python_check
         run: |
-          npm install -g htmlhint
-          htmlhint '**/*.html'
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '\.py$'; then
+            echo "Python files detected, running flake8."
+            flake8 .
+          else
+            echo "No Python files detected, skipping flake8."
+          fi
 
-      - name: Check CSS syntax with stylelint
+      # Check for CSS files and run Stylelint if there are any CSS changes
+      - name: Check for CSS files and run Stylelint
+        id: css_check
         run: |
-          npm install -g stylelint
-          stylelint '**/*.css'
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '\.css$'; then
+            echo "CSS files detected, running Stylelint."
+            stylelint "**/*.css"
+          else
+            echo "No CSS files detected, skipping Stylelint."
+          fi
 
-      - name: Test Flask app running
+      # Check for HTML files and run HTMLhint if there are any HTML changes
+      - name: Check for HTML files and run HTMLhint
+        id: html_check
         run: |
-          export FLASK_APP=app.py  # Ganti dengan nama file Flask kamu
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '\.html$'; then
+            echo "HTML files detected, running HTMLhint."
+            htmlhint "**/*.html"
+          else
+            echo "No HTML files detected, skipping HTMLhint."
+          fi
+
+      # Check if Flask app runs without errors (does not start the server permanently, just tests if it can run)
+      - name: Test Flask app runs without errors
+        run: |
+          # Export Flask environment variables (adjust if needed)
+          export FLASK_APP=your_flask_app.py
           export FLASK_ENV=development
-          flask run &  # Menjalankan Flask di background
-          sleep 5  # Tunggu beberapa detik agar Flask app bisa jalan
-          curl --silent --fail http://127.0.0.1:5000/  # Mengakses halaman utama Flask
           
-      - name: Check if Flask app is running
-        run: |
-          curl --silent --fail http://127.0.0.1:5000/ || exit 1  # Mengembalikan error jika halaman tidak dapat diakses
+          # Run the Flask app in the background to test if it starts without errors
+          python -m flask run &
+
+          # Give the Flask app a second to start up
+          sleep 3
+
+          # Check if the app is running by sending a test request to a route (adjust route as needed)
+          curl --silent --fail http://localhost:5000/your-test-route || exit 1
+
+          # Optionally, stop the Flask app after the check
+          kill %1
