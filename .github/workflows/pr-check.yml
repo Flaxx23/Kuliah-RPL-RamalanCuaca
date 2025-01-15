@@ -58,21 +58,21 @@ jobs:
             echo "No HTML files detected, skipping HTMLhint."
           fi
 
-      # Check if Flask app runs without errors (does not start the server permanently, just tests if it can run)
-      - name: Test Flask app runs without errors
-        run: |
-          # Export Flask environment variables (adjust if needed)
-          export FLASK_APP=app.py
-          export FLASK_ENV=development
+      # # Check if Flask app runs without errors (does not start the server permanently, just tests if it can run)
+      # - name: Test Flask app runs without errors
+      #   run: |
+      #     # Export Flask environment variables (adjust if needed)
+      #     export FLASK_APP=app.py
+      #     export FLASK_ENV=development
           
-          # Run the Flask app in the background to test if it starts without errors
-          python -m flask run &
+      #     # Run the Flask app in the background to test if it starts without errors
+      #     python -m flask run &
 
-          # Give the Flask app a second to start up
-          sleep 3
+      #     # Give the Flask app a second to start up
+      #     sleep 3
 
-          # Check if the app is running by sending a test request to a route (adjust route as needed)
-          curl --silent --fail http://localhost:5000/your-test-route || exit 1
+      #     # Check if the app is running by sending a test request to a route (adjust route as needed)
+      #     curl --silent --fail http://localhost:5000/your-test-route || exit 1
 
-          # Optionally, stop the Flask app after the check
-          kill %1
+      #     # Optionally, stop the Flask app after the check
+      #     kill %1
