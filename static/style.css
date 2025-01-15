@@ -1,31 +1,202 @@
-body.dark-mode {
-    background-color: #121212;
-    color: #ffffff;
+* {
+    margin: 0;
+    padding: 0;
 }
 
+.no-transition {
+    transition: none;
+}
+
+.dark-mode, .light-mode {
+    width: 100vw;
+    height: 100vh;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body.dark-mode button#toggle-mode {
+    background-color: #f0f0f0;
+    color: #12100E;
+}
+
+body.light-mode button#toggle-mode {
+    background-color: #12100E;
+    color: #f0f0f0;
+}
+
+/* Mode Gelap */
+body.dark-mode {
+    background-color: #1c1c1c; 
+    transition: background-color 0.7s ease, color 0.7s ease; 
+}
+
+/* Mode Terang */
 body.light-mode {
-    background-color: #f8f9fa;
-    color: #212529;
+    background-color: rgba(240, 240, 240, 0.5);
+
+    transition: background-color 0.7s ease, color 0.7s ease; 
 }
 
 .card {
-    background-color: #1e1e1e;
-    color: #ffffff;
+    height: 50vh;
+    width: 45vw;
+    background-color: #12100E;
+    color: #f0f0f0;
+    border: 3px solid #4db7c0  ;
+    box-shadow: 0 0 10px 5px rgba(77, 183, 192, 0.8); 
+    border-radius: 20px;
+    animation: fadeIn 0.7s ease-out;
+}
+
+.card-header, .form-label, .form-control, .d-grid {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.card-header {
+    font-family: "Zain", serif;
+    font-size: 44px;
+}
+
+.card-button {
+    display: flex;
+    justify-content: center;
+}
+
+.mode-button {
+    border: 1px solid;
+    border-radius: 20px;
+    width: 60px;
+    height: 40px;
+}
+
+.form-label, #city_name, .btn-primary {
+    font-family: "Montserrat", serif;
+}
+
+.form-control input {
+    width: 200px;
+    height: 30px;
+    padding: 0 10px;
+    outline: none;
+}
+
+button.btn-primary {
+    margin-top: 10px;
+    width: 120px;
+    height: 45px;
+    font-weight: 500;
+    background-color: #4db7c0;
     border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.5s ease;
 }
 
-.card.light-mode {
-    background-color: #ffffff;
-    color: #212529;
-    border: 1px solid #dee2e6;
+button.btn-primary:hover {
+    background-color: #3a8a91;
+    color: #f0f0f0;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+button#toggle-mode i {
+    transition: transform 0.8s ease;
 }
 
-.btn-outline-light {
-    color: #ffffff;
-    border-color: #ffffff;
+button#toggle-mode:active i {
+    animation: rotateIcon 1.2s ease-out; 
+}
+
+button#toggle-mode {
+    transition: background-color 1s ease, color 1s ease;
+}
+
+.mt-4 {
+    width: 20vw;
+    padding: 20px;
+    border-radius: 12px;
+    background-color: rgba(211, 211, 211, 0.7);
+    animation: slideUpFade 0.5s ease-out;
+    overflow: hidden;
+}
+
+.mt-4 h4 {
+    font-family: "Teachers", serif;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.mt-4 pre {
+    margin-bottom: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    animation: fadeIn 0.7s ease-out;
+}
+
+.mt-4 p {
+    display: flex;
+    justify-content: center;
+    font-family: "Teachers", serif;
+    font-size: 32px;
+}
+
+.mt-4 img {
+    width: 100%;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+
+}
+
+.card.slide-left {
+    animation: Slideleft 0.7s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes Slideleft {
+    from {
+        transform: translateX(20%);
+    }
+    to {
+        transform: translateX(-10%);
+    }
+}
+
+@keyframes rotateIcon {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes slideUpFade {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

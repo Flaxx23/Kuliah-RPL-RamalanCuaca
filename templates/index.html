@@ -4,66 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Cuaca</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Teachers:ital,wght@0,400..800;1,400..800&family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="dark-mode">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow">
-                    <div class="card-header text-center">
-                        <h2>Aplikasi Cuaca</h2>
-                        <button id="toggle-mode" class="btn btn-sm btn-outline-light">Switch to Light Mode</button>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST">
-                            <div class="mb-3">
-                                <label for="city_name" class="form-label">Masukkan nama kota:</label>
-                                <input type="text" id="city_name" name="city_name" class="form-control" placeholder="Contoh: Jakarta" required>
+    <div class="wrapper">
+            <div class="card">
+                <div class="card-header">Aplikasi Cuaca</div>
+                <div class="card-button">
+                    <button id="toggle-mode" class="mode-button">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="city_name" class="form-label">Masukkan nama kota:</label>
+                            <div class="form-control">
+                                <input type="text" id="city_name" name="city_name" placeholder="Contoh: Jakarta" required>
                             </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">Lihat Cuaca</button>
-                            </div>
-                        </form>
-
-                        {% if weather_data %}
-                        <div class="mt-4">
-                            <h4>Informasi Cuaca</h4>
-                            <p><strong>Kota:</strong> {{ weather_data.city }}</p>
-                            <p><strong>Cuaca:</strong> {{ weather_data.weather }}</p>
-                            <p><strong>Suhu:</strong> {{ weather_data.temperature }}°C</p>
-                            <p><strong>Kelembapan:</strong> {{ weather_data.humidity }}%</p>
-                            <p><strong>Kecepatan angin:</strong> {{ weather_data.wind_speed }} m/s</p>
                         </div>
-                        {% endif %}
-
-                        {% if error %}
-                        <div class="alert alert-danger mt-4">
-                            {{ error }}
+                        <div class="d-grid">
+                            <button type="submit" class="btn-primary">Lihat Cuaca</button>
                         </div>
-                        {% endif %}
-                    </div>
+                    </form>
+                    
                 </div>
             </div>
-        </div>
+            {% if weather_data %}
+            <div class="mt-4">
+                <h4>Informasi Cuaca</h4>
+                <pre><strong>Kota            :</strong> {{ weather_data.city }}</pre>
+                <pre><strong>Cuaca           :</strong> {{ weather_data.weather }}</pre>
+                <pre><strong>Suhu            :</strong> {{ weather_data.temperature }}°C</pre>
+                <pre><strong>Kelembapan      :</strong> {{ weather_data.humidity }}%</pre>
+                <pre><strong>Kecepatan angin :</strong> {{ weather_data.wind_speed }} m/s</pre>
+            </div>
+            {% endif %}
+
+            {% if error %}
+            <div class="mt-4">
+                <p>Lokasi Invalid</p>
+                <img src="{{ url_for('static', filename='error.gif') }}" alt="error">
+            </div>
+            {% endif %}
+
+            
     </div>
 
     <script>
         const toggleButton = document.getElementById('toggle-mode');
         const body = document.body;
 
+        body.classList.add('no-transition');
+
+        // Periksa mode yang disimpan di localStorage saat halaman dimuat
+        if (localStorage.getItem('mode') === 'light-mode') {
+            body.classList.add('light-mode');
+            toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+            body.classList.add('dark-mode');
+            toggleButton.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+
+        // Fungsi untuk mengganti mode
         toggleButton.addEventListener('click', () => {
             if (body.classList.contains('dark-mode')) {
                 body.classList.remove('dark-mode');
                 body.classList.add('light-mode');
-                toggleButton.textContent = 'Switch to Dark Mode';
+                toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+                localStorage.setItem('mode', 'light-mode');  // Simpan mode yang dipilih
             } else {
                 body.classList.remove('light-mode');
                 body.classList.add('dark-mode');
-                toggleButton.textContent = 'Switch to Light Mode';
+                toggleButton.innerHTML = '<i class="fas fa-moon"></i>';
+                localStorage.setItem('mode', 'dark-mode');  // Simpan mode yang dipilih
             }
+            
+            // Menambahkan transisi kembali setelah klik mode
+            setTimeout(() => {
+                body.classList.remove('no-transition');
+            }, 100);
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+        const weatherData = document.querySelector('.mt-4');
+        const card = document.querySelector('.card');
+        
+        if (weatherData) {
+            // Tambahkan class untuk menggeser card ke kiri
+            card.classList.add('slide-left');
+        }
+    });
     </script>
 </body>
 </html>
