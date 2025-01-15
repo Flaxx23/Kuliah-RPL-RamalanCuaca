@@ -62,7 +62,7 @@ jobs:
       - name: Test Flask app runs without errors
         run: |
           # Export Flask environment variables (adjust if needed)
-          export FLASK_APP=your_flask_app.py
+          export FLASK_APP=app.py
           export FLASK_ENV=development
           
           # Run the Flask app in the background to test if it starts without errors
