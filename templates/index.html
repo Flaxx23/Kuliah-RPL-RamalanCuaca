@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Cuaca</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dark-mode">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header text-center">
+                        <h2>Aplikasi Cuaca</h2>
+                        <button id="toggle-mode" class="btn btn-sm btn-outline-light">Switch to Light Mode</button>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label for="city_name" class="form-label">Masukkan nama kota:</label>
+                                <input type="text" id="city_name" name="city_name" class="form-control" placeholder="Contoh: Jakarta" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Lihat Cuaca</button>
+                            </div>
+                        </form>
+
+                        {% if weather_data %}
+                        <div class="mt-4">
+                            <h4>Informasi Cuaca</h4>
+                            <p><strong>Kota:</strong> {{ weather_data.city }}</p>
+                            <p><strong>Cuaca:</strong> {{ weather_data.weather }}</p>
+                            <p><strong>Suhu:</strong> {{ weather_data.temperature }}°C</p>
+                            <p><strong>Terasa seperti:</strong> {{ weather_data.feels_like }}°C</p>
+                            <p><strong>Kelembapan:</strong> {{ weather_data.humidity }}%</p>
+                            <p><strong>Kecepatan angin:</strong> {{ weather_data.wind_speed }} m/s</p>
+                        </div>
+                        {% endif %}
+
+                        {% if error %}
+                        <div class="alert alert-danger mt-4">
+                            {{ error }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const toggleButton = document.getElementById('toggle-mode');
+        const body = document.body;
+
+        toggleButton.addEventListener('click', () => {
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                toggleButton.textContent = 'Switch to Dark Mode';
+            } else {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                toggleButton.textContent = 'Switch to Light Mode';
+            }
+        });
+    </script>
+</body>
+</html>
